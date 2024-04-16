@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using WebApplication1.DTOs;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers;
@@ -40,6 +41,23 @@ public class AnimalsController : ControllerBase
         }
         
         return Ok(animals);
+    }
+
+    [HttpPost]
+    public IActionResult AddAnimal(AddAnimal animal)
+    {
+        using SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default"));
+        connection.Open();
+        
+        using //definicja commanda
+        SqlCommand command = new SqlCommand();
+        command.Connection = connection;
+        command.CommandText = "INSERT INTO Animal VALUES (@animalName,'','','')";
+        command.Parameters.AddWithValue("@animalname", animal.name);
+
+        command.ExecuteNonQuery();
+        
+        return Created("",null);
     }
 
 
