@@ -18,7 +18,7 @@ public class AnimalsController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAnimals()
+    public IActionResult GetAnimals(String orderBy = "Name")
     {
         string[] allowedColumns = { "idAnimal", "name", "description", "area" };
 
