@@ -84,6 +84,30 @@ public class AnimalsController : ControllerBase
         return Created("", null);
     }
 
+    [HttpPut]
+    [Route("api/animals/{idAnimal}")]
+    public IActionResult UpdateAnimal(int idAnimal, UpdateAnimal updateAnimal)
+    {
+        using SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default"));
+        connection.Open();
+
+        using SqlCommand command = new SqlCommand();
+
+        command.Connection = connection;
+        command.CommandText = "UPDATE Animal SET Name = @animalName, Decription = @animalDesc, Category = @animalCat, area = @animalArea WHERE idAnimal = @idAnimal";
+
+        // Poprawiono parametr na @idAnimal
+        command.Parameters.AddWithValue("@idAnimal", idAnimal);
+        command.Parameters.AddWithValue("@animalName", updateAnimal.name);
+        command.Parameters.AddWithValue("@animalDesc", updateAnimal.description);
+        command.Parameters.AddWithValue("@animalCat", updateAnimal.category);
+        command.Parameters.AddWithValue("@animalArea", updateAnimal.area);
+
+        command.ExecuteNonQuery();
+
+
+        return Ok();
+    }
 
 
 }
