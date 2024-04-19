@@ -109,5 +109,24 @@ public class AnimalsController : ControllerBase
         return Ok();
     }
 
+    [HttpDelete]
+    [Route("api/animals/{idAnimal}")]
+    public IActionResult DeleteAnimal(int idAnimal)
+    {
+        using SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default"));
+        connection.Open();
 
+        using //definicja commanda
+            SqlCommand command = new SqlCommand();
+        command.Connection = connection;
+
+        command.CommandText = "DELETE FROM ANIMAL WHERE IdAnimal = @id";
+
+        //ustawianie parametrow
+        command.Parameters.AddWithValue("@id", idAnimal);
+
+        command.ExecuteNonQuery();
+
+        return Ok();
+    }
 }
