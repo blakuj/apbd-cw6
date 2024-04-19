@@ -11,4 +11,10 @@ public class AddAnimal
     
     [MaxLength(200)]
     public string? description { get; set; }
+    
+    [MaxLength(200)]
+    public string category { get; set; }
+    
+    [MaxLength(200)]
+    public string area { get; set; }
 }
