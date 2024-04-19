@@ -5,11 +5,13 @@ using WebApplication1.DTOs;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers;
+
 [ApiController]
 [Route("api/[controller]")]
 public class AnimalsController : ControllerBase
 {
     private readonly IConfiguration _configuration;
+
     public AnimalsController(IConfiguration iConfiguration)
     {
         _configuration = iConfiguration;
@@ -18,28 +20,43 @@ public class AnimalsController : ControllerBase
     [HttpGet]
     public IActionResult GetAnimals()
     {
+        string[] allowedColumns = { "idAnimal", "name", "description", "area" };
+
+        if (!allowedColumns.Contains(orderBy.ToLower()))
+        {
+            orderBy = "name";
+        }
+
+
         SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default"));
         connection.Open();
         SqlCommand command = new SqlCommand();
         command.Connection = connection;
-        command.CommandText = "SELECT * from Animal";
+        command.CommandText = "SELECT * from Animal" +
+                              " ORDER BY " + orderBy;
 
         var reader = command.ExecuteReader();
 
         List<Animal> animals = new List<Animal>();
+
         int idAnimalOrdinal = reader.GetOrdinal("idAnimal");
         int nameOrdinal = reader.GetOrdinal("name");
+        int descOrdinal = reader.GetOrdinal("decription");
+        int categoryOrdinal = reader.GetOrdinal("category");
+        int areaOrdinal = reader.GetOrdinal("area");
 
         while (reader.Read())
         {
             animals.Add(new Animal()
             {
                 idAnimal = reader.GetInt32(idAnimalOrdinal),
-                name = reader.GetString(nameOrdinal)
-                
+                name = reader.GetString(nameOrdinal),
+                description = reader.GetString(descOrdinal),
+                category = reader.GetString(categoryOrdinal),
+                area = reader.GetString(areaOrdinal)
             });
         }
-        
+
         return Ok(animals);
     }
 
