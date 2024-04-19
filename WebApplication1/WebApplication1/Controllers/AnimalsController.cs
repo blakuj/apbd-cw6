@@ -61,20 +61,27 @@ public class AnimalsController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult AddAnimal(AddAnimal animal)
+    public IActionResult AddAnimal(AddAnimal addAnimal)
     {
         using SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default"));
         connection.Open();
-        
+
         using //definicja commanda
-        SqlCommand command = new SqlCommand();
+            SqlCommand command = new SqlCommand();
         command.Connection = connection;
-        command.CommandText = "INSERT INTO Animal VALUES (@animalName,'','','')";
-        command.Parameters.AddWithValue("@animalname", animal.name);
+
+        command.CommandText = "INSERT INTO Animal VALUES (@animalName,@animalDesc,@animalCategory,@animalArea)";
+
+        //ustawianie parametrow
+        command.Parameters.AddWithValue("@animalName", addAnimal.name);
+        command.Parameters.AddWithValue("@animalDesc", addAnimal.description ?? null);
+        command.Parameters.AddWithValue("@animalCategory", addAnimal.category ?? "");
+        command.Parameters.AddWithValue("@animalArea", addAnimal.area ?? "");
+
 
         command.ExecuteNonQuery();
-        
-        return Created("",null);
+
+        return Created("", null);
     }
 
 
